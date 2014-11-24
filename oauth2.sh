@@ -8,7 +8,7 @@
 # It will print out a URL to go to.  Do that and Accept it.
 # It will give you a token.
 # Run this program again with that token as a argument.
-# It will then print out your refresh token.  DON'T lose it.
+# It will then print out yuour refresh token.  DON'T lose it.
 # It will be used in all your future calls and does not expire.
 # This requires the curl program to be installed on your system.
 
