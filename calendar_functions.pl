@@ -1,10 +1,15 @@
 #!/usr/bin/env perl
 
+# A bunch of functions for use with the Google Calendar v3 API using REST
+#
+# RJ White
+# rj@moxad.com
+# Nov 2014
+
 use strict ;
 use warnings ;
 use LWP::UserAgent;
 use JSON ;
-use Data::Dumper ;
 
 my $C_ERROR = "Error:" ;
 

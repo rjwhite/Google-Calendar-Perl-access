@@ -1,13 +1,13 @@
-Google Calendar Perl access
+# Google Calendar Perl access
 
-This contains a library (calendar_functions.pl) that can be used for
+This contains a library (*calendar_functions.pl*) that can be used for
 command-line access to the new Google Calendar API v3 using Perl.
 
-A example usage program is create_cal_entry_full.plx which uses
+A example usage program is *create_cal_entry_full.plx* which uses
 most of the functions in the library.
 
 There is also a directory (examples) of short programs testing 
-one or more functions.  They expect the library calendar_functions.pl
+one or more functions.  They expect the library *calendar_functions.pl*
 to be in the current directory where they are run.
 
 The functions in calendar_functions.pl are:
@@ -30,5 +30,4 @@ quote that argument in case of any shell meta-characters in it.
 
 To understand more about ClientID, ClientSecret, 'refresh' tokens, etc
 for the use of the OAuth2 authentication required by v3 of Google
-Calendar, I suggest you check out:
-http://cornempire.net/2012/01/08/part-2-oauth2-and-configuring-your-application-with-google/
+Calendar, I suggest you check out [this](http://cornempire.net/2012/01/08/part-2-oauth2-and-configuring-your-application-with-google/)
