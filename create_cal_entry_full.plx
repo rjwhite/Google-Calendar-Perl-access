@@ -24,8 +24,8 @@ if ( $token =~ /^Error/ ) {
 
 # get our calendar list data
 my $cal_data = get_calendar_list_data( $token, $agent ) ;
-if ( $token =~ /^Error/ ) {
-    print "$token\n" ;
+if ( $cal_data =~ /^Error/ ) {
+    print "$cal_data\n" ;
     exit(1) ;
 }
 
