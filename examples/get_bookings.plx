@@ -3,11 +3,13 @@
 use strict ;
 use warnings ;
 use JSON ;
+use Data::Dumper ;
 
 require "calendar_functions.pl" ;
 
 my $agent     = "MyApp/0.1" ;
 my $timezone  = "-05:00" ;
+my $company   = "Acme Computing Inc." ;
 
 my $calendar  = '12345678901234567890123456@group.calendar.google.com' ;
 
@@ -17,15 +19,17 @@ my %myauth = (
     'client_id'     => '123456789012345678901234567890123456789012345.apps.googleusercontent.com',
     'grant_type'    => 'refresh_token',
 ) ;
-my $date       = "2014-11-23" ;
-my $starttime  = "10:00" ;
-my $endtime    = "18:30" ;
+
+my $date       = "2014-11-28" ;
+my $starttime  = "07:00" ;
+my $endtime    = "23:30" ;
 my $bookings = get_bookings( $date, $starttime, $endtime,
-    $timezone, $calendar, \%myauth, $agent ) ;
+    $timezone, $calendar, \%myauth, $agent, "summary,etag,id,start,end,htmlLink" ) ;
 if ( $bookings =~ /^Error/ ) {
     print "$bookings\n" ;
     exit(1) ;
 }
+print "result from get_bookings() is:\n$bookings\n\n" ;
 
 print "Bookings:\n" ;
 if ( $bookings =~ /^{/ ) {
@@ -38,10 +42,16 @@ if ( $bookings =~ /^{/ ) {
     }
     my $num = 0 ;
     foreach my $array_ref ( @{$items_ref} ) {
+        my $start  = ${$array_ref}{ 'start' }{ 'dateTime' } ;
+        my $end    = ${$array_ref}{ 'end' }{ 'dateTime' } ;
+        my $id     = ${$array_ref}{ 'id' } ;
+        my $status = ${$array_ref}{ 'status' } ;
+        next if (( defined( $status )) and ( $status eq "cancelled" )) ;
+        
         $num++ ;
-        my $start = ${$array_ref}{ 'start' }{ 'dateTime' } ;
-        my $end   = ${$array_ref}{ 'end' }{ 'dateTime' } ;
-        print "\t($num): start: $start  /  end: $end\n" ;
+
+        # my $link  = ${$array_ref}{ 'htmlLink' } ;
+        print "\t($num): id=$id: start: $start  /  end: $end\n" ;
     }
 }
 

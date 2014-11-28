@@ -160,7 +160,8 @@ sub create_JSON_dates {
         dateTime: "${date}T${endtime}:00.000${timezone}"
     },
     "summary": "$title",
-    "description": "$description"
+    "description": "$description",
+    "SingleEvents": 1
 }
 JSON
     return( $str ) ;
@@ -174,7 +175,6 @@ JSON
 # Input:
 #   access-token:   get with access_token()
 #   URL:            http://what.ever
-#   agent:          agent - can be undefined or empty string
 # Output:
 #   string          if ok
 #   $C_ERROR: msg   if not ok
@@ -273,13 +273,7 @@ sub access_token {
         my $access_token = ${$ref}{ 'access_token' } ;
         return( $access_token ) ;
     } else {
-        my $ref = from_json( $res->content ) ;
-        my $error = ${$ref}{ 'error_description' } ;
-        if ( defined( $error )) {
-            return( "${C_ERROR} $i_am: $error" ) ;
-        } else {
-            return( "${C_ERROR} $i_am: failed to get access token" ) ;
-        }
+        return( "${C_ERROR} $i_am: $res->status_line" ) ;
     }
 }
 
@@ -328,6 +322,7 @@ sub is_booked {
 #   5:  calendar-ID
 #   6:  reference to hash of authentication data
 #   7:  agent - can be empty string
+#   8:  (optional) string of comma separated fields we want
 # Output:
 #   JSON string of bookings
 
@@ -339,8 +334,9 @@ sub get_bookings {
     my $cal_id      = shift ;
     my $auth_ref    = shift ;
     my $agent       = shift ;
+    my $fields      = shift ;
 
-    my $i_am = "get_bookings()" ;
+    my $i_am   = "get_bookings()" ;
 
     # argument sanity checking.  These are all scalars
     my %args_check = (
@@ -364,6 +360,10 @@ sub get_bookings {
         return( "${C_ERROR} $i_am: Arg 6 is not a HASH reference" ) ;
     }
 
+    if ( not defined( $fields )) {
+        $fields = "" ;
+    }
+
     my $request = "https://www.googleapis.com/calendar/v3/calendars/" ;
     my $start   = $date . 'T' . $start_time . ":00.000${timezone}";
     my $end     = $date . 'T' . $end_time . ":00.000${timezone}";
@@ -373,7 +373,12 @@ sub get_bookings {
     $request .= $cal_id . '/events?' ;
     $request .= 'timeMax='  . $end ;
     $request .= '&timeMin=' . $start ;
-    $request .= '&fields=items(end%2Cstart%2Csummary)' ;
+    $request .= '&singleEvents=true' ;
+
+    # if user gave a restricted bumch of fields, provide them
+    if ( $fields ne "" ) {
+        $request .= '&fields=items(' . $fields . ')' ;
+    }
 
     my $token = access_token( $auth_ref, $agent );
     if ( $token =~ /^${C_ERROR}/ ) {
