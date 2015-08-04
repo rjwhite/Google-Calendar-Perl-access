@@ -274,7 +274,13 @@ sub access_token {
         my $access_token = ${$ref}{ 'access_token' } ;
         return( $access_token ) ;
     } else {
-        return( "${C_ERROR} $i_am: $res->status_line" ) ;
+        if($res->code() eq '501') {
+           # E.g. LWP::Protocol::https not installed
+           return( "${C_ERROR} $i_am: " . $res->message);
+        }
+        else {
+           return( "${C_ERROR} $i_am: " . $res->status_line );
+        }
     }
 }
 
