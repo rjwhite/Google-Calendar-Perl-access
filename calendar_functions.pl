@@ -24,6 +24,7 @@ use strict ;
 use warnings ;
 use LWP::UserAgent;
 use JSON ;
+use URI::Encode qw(uri_encode uri_decode);
 
 my $C_ERROR = "Error:" ;
 
@@ -370,9 +371,9 @@ sub get_bookings {
 
     # build up request
 
-    $request .= $cal_id . '/events?' ;
-    $request .= 'timeMax='  . $end ;
-    $request .= '&timeMin=' . $start ;
+    $request .= uri_encode($cal_id, {encode_reserved => 1}) . '/events?' ;
+    $request .= 'timeMax=' . uri_encode($end, {encode_reserved => 1}) ;
+    $request .= '&timeMin=' . uri_encode($start, {encode_reserved => 1}) ;
     $request .= '&singleEvents=true' ;
 
     # if user gave a restricted bumch of fields, provide them
